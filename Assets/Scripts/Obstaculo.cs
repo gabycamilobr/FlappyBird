@@ -6,21 +6,39 @@ public class Obstaculo : MonoBehaviour
 {
     [SerializeField]
     private float velocidade = 0.6f;
+
     [SerializeField]
     private float variacaoY;
-    // Start is called before the first frame update
-    void Start()
+
+    private Vector3 posicaoPassaro;
+
+    private bool pontuei;
+
+    private UIScript scriptDaUI;
+
+    private void Awake()
     {
         this.transform.Translate(Vector3.up * Random.Range(-variacaoY, variacaoY));
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        this.posicaoPassaro = GameObject.FindObjectOfType<Bird>().transform.position;
+        this.scriptDaUI = GameObject.FindObjectOfType<UIScript>();  
+    }
+
     void Update()
     {
+        if (!this.pontuei && this.transform.position.x < posicaoPassaro.x)
+        {
+            Debug.Log("Pontuou");
+            this.pontuei = true;
+            this.scriptDaUI.adicionarPontos();
+        }
         this.transform.Translate(Vector3.left * velocidade * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+   private void OnTriggerEnter2D(Collider2D collision)
     {
         this.Destruir();
     }
